@@ -1,7 +1,7 @@
 /**
  * Este array de objetoos contiene la informacion sobre la cual deberas maquetar las cards
  */
-const postings = [
+export const mockedPostings = [
   {
     posting_id: "44557981", //id del aviso
     posting_location: { //direccion del aviso
