@@ -1,10 +1,10 @@
 import React from "react";
 import moment from 'moment';
-import { Grid, Paper, Typography, Button, Box } from "@material-ui/core";
+import { Grid, Paper, Typography, Button, Box, Link } from "@material-ui/core";
+import {CustomPaper} from '../UI/CustomPaper';
 import { useStyles } from "./Post.styles";
 
 const Post = (props) => {
-  const classes = useStyles();
 
 	let price = null;
 	if (props.posting_prices[0].price) {
@@ -39,10 +39,36 @@ const Post = (props) => {
 		location = `${props.posting_location.address}, ${props.posting_location.zone}, ${props.posting_location.city}`
 	}
 
-	let publicationPlan = '';
-	if (props.publication_plan) {
-		publicationPlan = null;
+	let description = null;
+	if (props.posting_description) {
+		description = props.posting_description.substring(0, 320) + '...';
 	}
+
+	const publicationPlan = () => {
+		switch(props.publication_plan) {
+			case 'SIMPLE':
+				return {
+					type: 'Simple',
+					color: ''
+				};
+			case 'HIGHLIGHTED':
+				return {
+					type: 'Destacado',
+					color: '#31d1a1'
+				};
+			case 'SUPERHIGHLIGHTED':
+				return {
+					type: 'Súper destacado',
+					color: '#9371e0'
+				};
+			default:
+				return null;
+		} 
+	}
+
+	const classes = useStyles();
+
+	const preventDefault = (event) => event.preventDefault();
 
 	let publishedDaysAgo = null
 	if (props.publish_date) {
@@ -53,7 +79,7 @@ const Post = (props) => {
 
 	return (
 		<div className={classes.root}>
-		<Paper className={classes.paper} elevation={2}>
+		<CustomPaper color={publicationPlan().color} className={classes.paper} elevation={2}>
 			<Grid container spacing={0}>
 			<Grid item>
 				<Box className={classes.image}>
@@ -63,7 +89,7 @@ const Post = (props) => {
 					src={props.posting_picture}
 				/>
 				<Typography className={classes.imgCaption} variant="caption">
-					{props.publication_plan}
+					{publicationPlan().type}
 				</Typography>
 				</Box>
 				<Box marginBottom={1} className={classes.amounts}>
@@ -74,14 +100,19 @@ const Post = (props) => {
 			<Grid className={classes.rightColumn} item xs={12} sm container>
 				<Grid item xs container direction="column" spacing={2}>
 				<Grid item xs>
-					<Typography gutterBottom variant="subtitle1">
-					{props.title}
-					</Typography>
-					<Typography variant="body2" gutterBottom>
-					{location}
-					</Typography>
+					<Box marginBottom={4}>
+						<Typography gutterBottom variant="subtitle1">
+							<Link href={props.posting_slug} onClick={preventDefault} color='secondary'>
+								{props.title}
+							</Link>
+						</Typography>
+						<Typography variant="body2" gutterBottom>
+							{location}
+						</Typography>
+					</Box>
+					
 					<Typography variant="body2" color="textSecondary">
-					{props.posting_description}
+						{description}
 					</Typography>
 				</Grid>
 				<Grid item>
@@ -101,7 +132,7 @@ const Post = (props) => {
 				</Grid>
 			</Grid>
 			</Grid>
-		</Paper>
+		</CustomPaper>
 		</div>
 	);
 };
