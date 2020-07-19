@@ -9,14 +9,27 @@ import { Container, Box } from "@material-ui/core";
 
 const SearchResults = (props) => {
   const [postings, setPostings] = useState([]);
+  const [filters, setFilters] = useState({operationType: 0, address: ''})
 
   useEffect(() => {
       const getPostings = async () => {
         try {
-          mockedPostings.map(post => {
+          const filteredMockedPostings = mockedPostings.filter(post => {
+            if(filters.operationType !== 0 && filters.operationType !== post.operation_type.operation_type_id) {
+              return false
+            }
+            if(filters.address !== "" && post.posting_location.address.toLowerCase().search(filters.address.toLowerCase()) === -1) {
+              return false
+            }
+            return true;
+          });
+          filteredMockedPostings.map(post => {
             const curatedPost = {};
-            curatedPost['price'] = setPostPrices(post.posting_prices[0].price);
-            curatedPost['expenses'] = setPostPrices(post.posting_prices[0].expenses);
+            curatedPost['id'] = post.posting_id;
+            curatedPost['prices'] = {
+              price: setPostPrices(post.posting_prices[0].price),
+              expenses: setPostPrices(post.posting_prices[0].expenses)
+            }
             curatedPost['location'] = setPostLocation(post.posting_location);
             curatedPost['title'] = post.title;
             curatedPost['slug'] = post.posting_slug;
@@ -24,6 +37,7 @@ const SearchResults = (props) => {
             curatedPost['plan'] = setPostPublicationPlan(post.publication_plan);
             curatedPost['daysPublished'] = setPostDaysPublished(post.publish_date);
             curatedPost['picture'] = post.posting_picture;
+            curatedPost['wishlist'] = false;
             console.log(curatedPost)
             setPostings(postings => [...postings,curatedPost]);
           });

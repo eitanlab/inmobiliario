@@ -7,7 +7,7 @@ const Post = (props) => {
   const {
     plan,
     picture,
-    price,
+    prices,
     expenses,
     title,
     slug,
@@ -30,8 +30,8 @@ const Post = (props) => {
               </Typography>
             </Box>
             <Box marginBottom={1} className={classes.amounts}>
-              <Typography variant="h5">{price}</Typography>
-              <Typography variant="subtitle2">+ {expenses} Expensas</Typography>
+              <Typography variant="h5">{prices.price}</Typography>
+              <Typography variant="subtitle2">+ {prices.expenses} Expensas</Typography>
             </Box>
           </Grid>
           <Grid className={classes.rightColumn} item xs={12} sm container>
