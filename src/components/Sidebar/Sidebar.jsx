@@ -19,11 +19,6 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import SearchIcon from '@material-ui/icons/Search';
 
 const Sidebar = (props) => {
-    const [tipoOperacion, setTipoOperacion] = React.useState('todos');
-    
-    const handleTipoOperacion = (event) => {
-        setTipoOperacion(event.target.value);
-    };
 
     return (
     <>
@@ -49,9 +44,17 @@ const Sidebar = (props) => {
                 <Box display='flex'>
                     <TextField
                         id="search-field"
-                        defaultValue="Buscar por dirección"
-                        variant="outlined" />
-                    <IconButton color='secondary' aria-label="buscar por dirección">
+                        label="Buscar por dirección"
+                        name="address"
+                        variant="outlined" 
+                        color='secondary'
+                        defaultValue={props.address}
+                        onChange={event => props.onFilterChange(event)} />
+                    <IconButton 
+                      name="searchByAdress" 
+                      color='secondary' 
+                      aria-label="buscar por dirección"
+                      onClick={props.searchByAddress}>
                         <SearchIcon />
                     </IconButton>
                 </Box>
@@ -71,11 +74,11 @@ const Sidebar = (props) => {
               </AccordionSummary>
               <AccordionDetails>
                 <FormControl component="fieldset">
-                    <RadioGroup aria-label="Tipo de operación" name="operacion" value={tipoOperacion} onChange={handleTipoOperacion}>
-                        <FormControlLabel value="comprar" control={<Radio color='primary'/>} label="Comprar" />
-                        <FormControlLabel value="alquilar" control={<Radio color='primary'/>} label="Alquilar" />
-                        <FormControlLabel value="temporal" control={<Radio color='primary'/>} label="Temporal" />
-                        <FormControlLabel value="todos" control={<Radio color='primary'/>} label="Todos" />
+                    <RadioGroup aria-label="Tipo de operación" name="operationType" value={props.operationType} onChange={event => props.onFilterChange(event)}>
+                        <FormControlLabel value="2" control={<Radio color='primary'/>} label="Comprar" />
+                        <FormControlLabel value="1" control={<Radio color='primary'/>} label="Alquilar" />
+                        <FormControlLabel value="3" control={<Radio color='primary'/>} label="Temporal" />
+                        <FormControlLabel value="0" control={<Radio color='primary'/>} label="Todos" />
                     </RadioGroup>
                 </FormControl>
               </AccordionDetails>

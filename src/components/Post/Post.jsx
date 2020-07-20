@@ -30,8 +30,10 @@ const Post = (props) => {
               </Typography>
             </Box>
             <Box marginBottom={1} className={classes.amounts}>
-              <Typography variant="h5">{prices.price}</Typography>
-              <Typography variant="subtitle2">+ {prices.expenses} Expensas</Typography>
+              	<Typography variant="h5">{prices.price}</Typography>
+				<Typography variant="subtitle2">
+					{prices.expenses ? `+ ${prices.expenses} Expensas` : null}
+				</Typography>
             </Box>
           </Grid>
           <Grid className={classes.rightColumn} item xs={12} sm container>

@@ -6,11 +6,9 @@ import { Box } from '@material-ui/core'
 const Postings = props => {
     let postings = 'No se encontraron propiedades';
     if(props.postingsList.length > 0) {
-        //console.log('Los postings: ', props.postingsList)
         postings = props.postingsList.map(post => {
-            return <Post key={post.posting_id} {...post} />
+            return <Post key={post.id} {...post} />
         });
-        //console.log('Los postings: ', postings)
     }
     
     return (

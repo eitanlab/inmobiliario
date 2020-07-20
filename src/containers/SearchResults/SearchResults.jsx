@@ -9,21 +9,13 @@ import { Container, Box } from "@material-ui/core";
 
 const SearchResults = (props) => {
   const [postings, setPostings] = useState([]);
-  const [filters, setFilters] = useState({operationType: 0, address: ''})
+  const [filters, setFilters] = useState({operationType: '0', address: '', searchByAdress: false})
+  const [postingsToShow, setPostingsToShow] = useState([]);
 
   useEffect(() => {
       const getPostings = async () => {
         try {
-          const filteredMockedPostings = mockedPostings.filter(post => {
-            if(filters.operationType !== 0 && filters.operationType !== post.operation_type.operation_type_id) {
-              return false
-            }
-            if(filters.address !== "" && post.posting_location.address.toLowerCase().search(filters.address.toLowerCase()) === -1) {
-              return false
-            }
-            return true;
-          });
-          filteredMockedPostings.map(post => {
+          mockedPostings.map(post => {
             const curatedPost = {};
             curatedPost['id'] = post.posting_id;
             curatedPost['prices'] = {
@@ -38,16 +30,30 @@ const SearchResults = (props) => {
             curatedPost['daysPublished'] = setPostDaysPublished(post.publish_date);
             curatedPost['picture'] = post.posting_picture;
             curatedPost['wishlist'] = false;
+            curatedPost['operationType'] = post.operation_type.operation_type_id.toString();
             console.log(curatedPost)
             setPostings(postings => [...postings,curatedPost]);
           });
-          //console.log(postings);
         } catch (error) {
-          alert(`Postings can't be loaded because: ${error}`);
+          alert(`No se pueden cargar propiedades - Error(${error})`);
         }
       };
       getPostings();
   }, []);
+
+  useEffect(() => {
+    const filteredPostings = postings.filter(post => {
+      if(filters.operationType !== '0' && filters.operationType !== post.operationType) {
+        return false;
+      }
+      if(filters.address !== "" && post.location.toLowerCase().search(filters.address.toLowerCase()) === -1) {
+        return false;
+      }
+      return true;
+    });
+    setPostingsToShow(filteredPostings);
+    setFilters({...filters, searchByAdress: false})
+  }, [filters.operationType, filters.searchByAdress, postings]);
 
   const setPostPrices = value => {
     if (value) {
@@ -59,15 +65,24 @@ const SearchResults = (props) => {
     }
   }
 
+  const handleFilterChange = (e) => {
+    //console.log(e.target.value)
+    setFilters({
+      ...filters,
+      [e.target.name]: e.target.value
+    });
+  }
+
+  const handleSearchByAddress = () => {
+    setFilters({
+      ...filters, 
+      searchByAdress: true
+    });
+  }
+
   const setPostLocation = location => {
     if (location) {
       return `${location.address}, ${location.zone}, ${location.city}`
-    }
-  }
-
-	const setPostShortDescription = description => {
-    if (description) {
-      return description.substring(0, 320) + '...';
     }
   }
 
@@ -105,10 +120,14 @@ const SearchResults = (props) => {
     <Container>
       <Box display="flex" paddingTop={5}>
         <Box minWidth={300} width={300} marginRight={2}>
-          <Sidebar />
+          <Sidebar 
+            operationType={filters.operationType}
+            address={filters.address} 
+            onFilterChange={handleFilterChange}
+            searchByAddress={handleSearchByAddress} />
         </Box>
         <Box flexGrow={1}>
-          <Postings postingsList={postings}/>
+          <Postings postingsList={postingsToShow}/>
         </Box>
       </Box>
     </Container>
