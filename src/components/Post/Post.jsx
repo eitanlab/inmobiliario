@@ -1,19 +1,22 @@
 import React from "react";
-import { Grid, Paper, Typography, Button, Box, Link } from "@material-ui/core";
+import { Grid, Typography, Button, Box, Link, Fab } from "@material-ui/core";
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 import { CustomPaper } from "../UI/CustomPaper";
 import { useStyles } from "./Post.styles";
 
 const Post = (props) => {
   const {
-    plan,
+	id,
+	plan,
     picture,
     prices,
-    expenses,
     title,
     slug,
     location,
     description,
-    daysPublished,
+	daysPublished,
+	wishlist
   } = props;
   const classes = useStyles();
   const preventDefault = (event) => event.preventDefault();
@@ -24,10 +27,18 @@ const Post = (props) => {
         <Grid container spacing={0}>
           <Grid item>
             <Box className={classes.image}>
-              <img className={classes.img} alt="complex" src={picture} />
-              <Typography className={classes.imgCaption} variant="caption">
-                {plan.type}
-              </Typography>
+				<img className={classes.img} alt="complex" src={picture} />
+				<Typography className={classes.imgCaption} variant="caption">
+					{plan.type}
+				</Typography>
+				  <Fab 
+					  size="small" 
+					  color="default" 
+					  aria-label="add" 
+					  onClick={() => props.onFavoriteClick(id)}
+					  className={classes.favoriteButton}>
+          			{wishlist ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+        		</Fab>
             </Box>
             <Box marginBottom={1} className={classes.amounts}>
               	<Typography variant="h5">{prices.price}</Typography>

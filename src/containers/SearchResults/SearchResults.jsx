@@ -31,7 +31,7 @@ const SearchResults = (props) => {
             curatedPost['picture'] = post.posting_picture;
             curatedPost['wishlist'] = false;
             curatedPost['operationType'] = post.operation_type.operation_type_id.toString();
-            console.log(curatedPost)
+            //console.log(curatedPost)
             setPostings(postings => [...postings,curatedPost]);
           });
         } catch (error) {
@@ -66,7 +66,6 @@ const SearchResults = (props) => {
   }
 
   const handleFilterChange = (e) => {
-    //console.log(e.target.value)
     setFilters({
       ...filters,
       [e.target.name]: e.target.value
@@ -78,6 +77,16 @@ const SearchResults = (props) => {
       ...filters, 
       searchByAdress: true
     });
+  }
+
+  const handleFavoriteClick = id => {
+    const elementIndex = postings.findIndex(post => post.id === id );
+    let newArrayOfPostings = [...postings];
+    newArrayOfPostings[elementIndex] = {...newArrayOfPostings[elementIndex], wishlist: !newArrayOfPostings[elementIndex].wishlist}
+    setPostings(newArrayOfPostings);
+    //setPostings({wishlist: !postings.wishlist});
+    //console.log('clicked: ', id)
+    //console.log('elementIndex: ', elementIndex)
   }
 
   const setPostLocation = location => {
@@ -127,7 +136,7 @@ const SearchResults = (props) => {
             searchByAddress={handleSearchByAddress} />
         </Box>
         <Box flexGrow={1}>
-          <Postings postingsList={postingsToShow}/>
+          <Postings favoriteClicked={handleFavoriteClick} postingsList={postingsToShow}/>
         </Box>
       </Box>
     </Container>

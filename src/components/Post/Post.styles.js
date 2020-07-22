@@ -21,11 +21,17 @@ export const useStyles = makeStyles(theme => ({
       maxHeight: '100%',
     },
     imgCaption: {
-        position: 'absolute',
-        top: 5,
-        left: 10,
-        textShadow: '0 2px 4px rgba(0,0,0,.7)',
-        color: '#FFF'
+      position: 'absolute',
+      top: 5,
+      left: 10,
+      textShadow: '0 2px 4px rgba(0,0,0,.7)',
+      color: '#FFF'
+    },
+    favoriteButton: {
+      position: 'absolute',
+      top: 5,
+      right: 10,
+      backgroundColor: '#FFF'
     },
     amounts: {
         marginLeft: theme.spacing(2),

@@ -7,7 +7,7 @@ const Postings = props => {
     let postings = 'No se encontraron propiedades';
     if(props.postingsList.length > 0) {
         postings = props.postingsList.map(post => {
-            return <Post key={post.id} {...post} />
+            return <Post key={post.id} onFavoriteClick={props.favoriteClicked} {...post} />
         });
     }
     
