@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import SearchResults from './containers/SearchResults/SearchResults';
 import { ThemeProvider } from '@material-ui/core/styles';
 import { theme } from './theme';

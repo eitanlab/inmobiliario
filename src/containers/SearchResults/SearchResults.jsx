@@ -4,7 +4,7 @@ import moment from 'moment';
 import { mockedPostings } from '../../___mock__/mockedPostings';
 import Sidebar from "../../components/Sidebar/Sidebar";
 import Postings from "../../components/Postings/Postings";
-import { Container, Box, Modal } from "@material-ui/core";
+import { Container, Box } from "@material-ui/core";
 import ContactForm from '../../components/ContactForm/ContactForm';
 
 const SearchResults = (props) => {
@@ -16,6 +16,7 @@ const SearchResults = (props) => {
   const [wishlist, setWishlist] = useLocalStorage('wishlist',[]);
   const [openContactForm, setOpenContactForm] = useState(false);
   const [contactForm, setContactForm] = useState({nombre: '', telefono: '', email: ''});
+  const [contactFormStatus, setContactFormStatus] = useState('ready');
   const [contacts, setContacts] = useState([]);
 
   const contactFormInitialState = {nombre: '', telefono: '', email: ''};
@@ -147,6 +148,7 @@ const SearchResults = (props) => {
 
   const handleContactFormClose = () => {
     setOpenContactForm(false);
+    setContactFormStatus('ready');
   };
 
   const handleFieldChange = (e) => {
@@ -154,11 +156,19 @@ const SearchResults = (props) => {
   }
 
   const handleSubmitContact = (e) => {
-    if(!Object.values(contactForm).includes('')) {
-      setContacts([...contacts,contactForm]);
-      setContactForm(contactFormInitialState);
-      handleContactFormClose();
+    if(Object.values(contactForm).includes('')) {
+      setContactFormStatus('ready');
+      return;
     }
+    const duplicatedContact = contacts.filter(contact => (contact.email === contactForm.email));
+    if (contacts.length > 0 && duplicatedContact) {
+      setContactFormStatus('duplicated');
+      setContactForm(contactFormInitialState);
+      return;
+    }
+    setContacts([...contacts,contactForm]);
+    setContactFormStatus('success');
+    setContactForm(contactFormInitialState);
   }
 
   return (
@@ -168,7 +178,8 @@ const SearchResults = (props) => {
         handleClose={handleContactFormClose}
         onFieldChange={handleFieldChange}
         onSubmit={handleSubmitContact}
-        formFields={contactForm} />
+        formFields={contactForm}
+        formStatus={contactFormStatus} />
       <Box display="flex" paddingTop={5}>
         <Box minWidth={300} width={300} marginRight={2}>
           <Sidebar 

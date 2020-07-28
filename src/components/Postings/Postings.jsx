@@ -4,7 +4,6 @@ import { Box } from '@material-ui/core'
 
 const Postings = React.memo(props => {
     let postings = 'No se encontraron propiedades';
-    console.log('render: ',props.onWishlist);
     if(props.postingList.length > 0) {
         postings = props.postingList.map(post => {
             return <Post 
