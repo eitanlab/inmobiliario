@@ -16,7 +16,7 @@ const Post = (props) => {
     location,
     description,
 	daysPublished,
-	wishlist
+	onWishlist
   } = props;
   const classes = useStyles();
   const preventDefault = (event) => event.preventDefault();
@@ -37,7 +37,7 @@ const Post = (props) => {
 					  aria-label="add" 
 					  onClick={() => props.onFavoriteClick(id)}
 					  className={classes.favoriteButton}>
-          			{wishlist ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+          			{onWishlist ? <FavoriteIcon /> : <FavoriteBorderIcon />}
         		</Fab>
             </Box>
             <Box marginBottom={1} className={classes.amounts}>

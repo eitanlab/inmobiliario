@@ -1,13 +1,17 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import Post from '../Post/Post'
 import { Box } from '@material-ui/core'
 
-const Postings = props => {
+const Postings = React.memo(props => {
     let postings = 'No se encontraron propiedades';
-    if(props.postingsList.length > 0) {
-        postings = props.postingsList.map(post => {
-            return <Post key={post.id} onFavoriteClick={props.favoriteClicked} {...post} />
+    console.log('render: ',props.onWishlist);
+    if(props.postingList.length > 0) {
+        postings = props.postingList.map(post => {
+            return <Post 
+                    key={post.id} 
+                    onFavoriteClick={props.favoriteClicked}
+                    onWishlist={props.onWishlist.includes(post.id)} 
+                    {...post} />
         });
     }
     
@@ -16,10 +20,6 @@ const Postings = props => {
             {postings}
         </Box>
     )
-}
+});
 
-Postings.propTypes = {
-
-}
-
-export default Postings
+export default Postings;

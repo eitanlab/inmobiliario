@@ -1,7 +1,6 @@
-import React, { Fragment, useState, useEffect } from "react";
-import PropTypes from "prop-types";
+import React, { useState, useEffect } from "react";
+import useLocalStorage from '../../hooks/useLocalStorage';
 import moment from 'moment';
-import classes from "./SearchResults.module.scss";
 import { mockedPostings } from '../../___mock__/mockedPostings';
 import Sidebar from "../../components/Sidebar/Sidebar";
 import Postings from "../../components/Postings/Postings";
@@ -9,12 +8,17 @@ import { Container, Box } from "@material-ui/core";
 
 const SearchResults = (props) => {
   const [postings, setPostings] = useState([]);
-  const [filters, setFilters] = useState({operationType: '0', address: '', searchByAdress: false})
+  const [operationType, setOperationType] = useState('0');
+  const [address, setAddress] = useState('');
+  const [searchByAdress, setSearchByAdress] = useState(false);
   const [postingsToShow, setPostingsToShow] = useState([]);
+  const [wishlist, setWishlist] = useLocalStorage('wishlist',[]);
 
   useEffect(() => {
+      setWishlist([])
       const getPostings = async () => {
         try {
+          console.log('prevWishlist: ',wishlist);
           mockedPostings.map(post => {
             const curatedPost = {};
             curatedPost['id'] = post.posting_id;
@@ -29,9 +33,7 @@ const SearchResults = (props) => {
             curatedPost['plan'] = setPostPublicationPlan(post.publication_plan);
             curatedPost['daysPublished'] = setPostDaysPublished(post.publish_date);
             curatedPost['picture'] = post.posting_picture;
-            curatedPost['wishlist'] = false;
             curatedPost['operationType'] = post.operation_type.operation_type_id.toString();
-            //console.log(curatedPost)
             setPostings(postings => [...postings,curatedPost]);
           });
         } catch (error) {
@@ -43,17 +45,17 @@ const SearchResults = (props) => {
 
   useEffect(() => {
     const filteredPostings = postings.filter(post => {
-      if(filters.operationType !== '0' && filters.operationType !== post.operationType) {
+      if(operationType !== '0' && operationType !== post.operationType) {
         return false;
       }
-      if(filters.address !== "" && post.location.toLowerCase().search(filters.address.toLowerCase()) === -1) {
+      if(address !== "" && !post.location.toLowerCase().includes(address.toLowerCase())) {
         return false;
       }
       return true;
     });
+    setSearchByAdress(false);
     setPostingsToShow(filteredPostings);
-    setFilters({...filters, searchByAdress: false})
-  }, [filters.operationType, filters.searchByAdress, postings]);
+  }, [operationType, searchByAdress, postings]);
 
   const setPostPrices = value => {
     if (value) {
@@ -66,27 +68,31 @@ const SearchResults = (props) => {
   }
 
   const handleFilterChange = (e) => {
-    setFilters({
-      ...filters,
-      [e.target.name]: e.target.value
-    });
+    switch (e.target.name) {
+      case 'operationType':
+        setOperationType(e.target.value);
+        break;
+        case 'address':
+          setAddress(e.target.value);
+          break;
+      default:
+        break;
+    }
   }
 
   const handleSearchByAddress = () => {
-    setFilters({
-      ...filters, 
-      searchByAdress: true
-    });
+    setSearchByAdress(true);
   }
 
   const handleFavoriteClick = id => {
-    const elementIndex = postings.findIndex(post => post.id === id );
-    let newArrayOfPostings = [...postings];
-    newArrayOfPostings[elementIndex] = {...newArrayOfPostings[elementIndex], wishlist: !newArrayOfPostings[elementIndex].wishlist}
-    setPostings(newArrayOfPostings);
-    //setPostings({wishlist: !postings.wishlist});
-    //console.log('clicked: ', id)
-    //console.log('elementIndex: ', elementIndex)
+      if(wishlist.includes(id)) {
+        const newWishlist = wishlist.filter( wishItem => wishItem !== id );
+        console.log('newWishlist', newWishlist)
+        setWishlist(newWishlist);
+        
+      } else {
+        setWishlist([...wishlist,id]);
+      }
   }
 
   const setPostLocation = location => {
@@ -130,19 +136,20 @@ const SearchResults = (props) => {
       <Box display="flex" paddingTop={5}>
         <Box minWidth={300} width={300} marginRight={2}>
           <Sidebar 
-            operationType={filters.operationType}
-            address={filters.address} 
+            operationType={operationType}
+            address={address} 
             onFilterChange={handleFilterChange}
             searchByAddress={handleSearchByAddress} />
         </Box>
         <Box flexGrow={1}>
-          <Postings favoriteClicked={handleFavoriteClick} postingsList={postingsToShow}/>
+          <Postings 
+            favoriteClicked={handleFavoriteClick}  
+            postingList={postingsToShow} 
+            onWishlist={wishlist} />
         </Box>
       </Box>
     </Container>
   );
 };
-
-SearchResults.propTypes = {};
 
 export default SearchResults;
