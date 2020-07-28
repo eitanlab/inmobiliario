@@ -16,7 +16,8 @@ const Post = (props) => {
     location,
     description,
 	daysPublished,
-	onWishlist
+	onWishlist,
+	onContact
   } = props;
   const classes = useStyles();
   const preventDefault = (event) => event.preventDefault();
@@ -78,7 +79,7 @@ const Post = (props) => {
                   <Typography variant="body2">
                     Publicado hace {daysPublished} días
                   </Typography>
-                  <Button variant="contained" color="primary">
+                  <Button variant="contained" color="primary" onClick={onContact}>
                     Contactar
                   </Button>
                 </Box>

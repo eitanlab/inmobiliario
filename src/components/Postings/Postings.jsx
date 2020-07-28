@@ -10,7 +10,8 @@ const Postings = React.memo(props => {
             return <Post 
                     key={post.id} 
                     onFavoriteClick={props.favoriteClicked}
-                    onWishlist={props.onWishlist.includes(post.id)} 
+                    onWishlist={props.onWishlist.includes(post.id)}
+                    onContact={props.handleContactFormOpen} 
                     {...post} />
         });
     }

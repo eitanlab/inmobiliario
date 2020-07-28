@@ -4,7 +4,8 @@ import moment from 'moment';
 import { mockedPostings } from '../../___mock__/mockedPostings';
 import Sidebar from "../../components/Sidebar/Sidebar";
 import Postings from "../../components/Postings/Postings";
-import { Container, Box } from "@material-ui/core";
+import { Container, Box, Modal } from "@material-ui/core";
+import ContactForm from '../../components/ContactForm/ContactForm';
 
 const SearchResults = (props) => {
   const [postings, setPostings] = useState([]);
@@ -13,6 +14,15 @@ const SearchResults = (props) => {
   const [searchByAdress, setSearchByAdress] = useState(false);
   const [postingsToShow, setPostingsToShow] = useState([]);
   const [wishlist, setWishlist] = useLocalStorage('wishlist',[]);
+  const [openContactForm, setOpenContactForm] = useState(false);
+  const [contactForm, setContactForm] = useState({nombre: '', telefono: '', email: ''});
+  const [contacts, setContacts] = useState([]);
+
+  const contactFormInitialState = {nombre: '', telefono: '', email: ''};
+
+  useEffect(() => {
+    setContactForm(contactFormInitialState);
+  }, []);
 
   useEffect(() => {
       setWishlist([])
@@ -131,8 +141,34 @@ const SearchResults = (props) => {
     }
   } 
 
+  const handleContactFormOpen = () => {
+    setOpenContactForm(true);
+  };
+
+  const handleContactFormClose = () => {
+    setOpenContactForm(false);
+  };
+
+  const handleFieldChange = (e) => {
+    setContactForm({...contactForm, [e.target.name]: e.target.value});
+  }
+
+  const handleSubmitContact = (e) => {
+    if(!Object.values(contactForm).includes('')) {
+      setContacts([...contacts,contactForm]);
+      setContactForm(contactFormInitialState);
+      handleContactFormClose();
+    }
+  }
+
   return (
     <Container>
+      <ContactForm 
+        open={openContactForm} 
+        handleClose={handleContactFormClose}
+        onFieldChange={handleFieldChange}
+        onSubmit={handleSubmitContact}
+        formFields={contactForm} />
       <Box display="flex" paddingTop={5}>
         <Box minWidth={300} width={300} marginRight={2}>
           <Sidebar 
@@ -145,7 +181,8 @@ const SearchResults = (props) => {
           <Postings 
             favoriteClicked={handleFavoriteClick}  
             postingList={postingsToShow} 
-            onWishlist={wishlist} />
+            onWishlist={wishlist}
+            handleContactFormOpen={handleContactFormOpen} />
         </Box>
       </Box>
     </Container>
