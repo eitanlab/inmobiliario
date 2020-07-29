@@ -9,8 +9,8 @@ import ContactForm from '../../components/ContactForm/ContactForm';
 
 const SearchResults = (props) => {
   const [postings, setPostings] = useState([]);
-  const [operationType, setOperationType] = useState('0');
-  const [address, setAddress] = useState('');
+  const [operationType, setOperationType] = useLocalStorage('operationType','0');
+  const [address, setAddress] = useLocalStorage('address','');
   const [searchByAdress, setSearchByAdress] = useState(false);
   const [postingsToShow, setPostingsToShow] = useState([]);
   const [wishlist, setWishlist] = useLocalStorage('wishlist',[]);
@@ -29,7 +29,6 @@ const SearchResults = (props) => {
       setWishlist([])
       const getPostings = async () => {
         try {
-          console.log('prevWishlist: ',wishlist);
           mockedPostings.map(post => {
             const curatedPost = {};
             curatedPost['id'] = post.posting_id;
@@ -98,7 +97,6 @@ const SearchResults = (props) => {
   const handleFavoriteClick = id => {
       if(wishlist.includes(id)) {
         const newWishlist = wishlist.filter( wishItem => wishItem !== id );
-        console.log('newWishlist', newWishlist)
         setWishlist(newWishlist);
         
       } else {

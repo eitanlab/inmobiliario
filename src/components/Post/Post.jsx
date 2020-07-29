@@ -3,6 +3,7 @@ import { Grid, Typography, Button, Box, Link, Fab } from "@material-ui/core";
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import { CustomPaper } from "../UI/CustomPaper";
+import { red } from '@material-ui/core/colors';
 import { useStyles } from "./Post.styles";
 
 const Post = (props) => {
@@ -38,7 +39,7 @@ const Post = (props) => {
 					  aria-label="add" 
 					  onClick={() => props.onFavoriteClick(id)}
 					  className={classes.favoriteButton}>
-          			{onWishlist ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+          			{onWishlist ? <FavoriteIcon style={{ color: red[500] }} /> : <FavoriteBorderIcon />}
         		</Fab>
             </Box>
             <Box marginBottom={1} className={classes.amounts}>

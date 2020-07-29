@@ -33,6 +33,7 @@ export const useStyles = makeStyles(theme => ({
       right: 10,
       backgroundColor: '#FFF'
     },
+    
     amounts: {
         marginLeft: theme.spacing(2),
     },
